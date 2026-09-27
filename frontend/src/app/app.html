@@ -1,0 +1,95 @@
+<div class="desk">
+  <div class="sheet">
+    <header class="letterhead">
+      <div class="mark">☤</div>
+      <div class="letterhead-text">
+        <h1>Centre d'imagerie académique</h1>
+        <p>Compte-rendu de lecture assistée par intelligence artificielle</p>
+      </div>
+    </header>
+
+    <div class="fields">
+      <div class="field">
+        <span class="field-label">Examen</span>
+        <span class="field-value">Radiographie thoracique</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Fichier</span>
+        <span class="field-value">{{ fileName() || '—' }}</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Analysé le</span>
+        <span class="field-value">{{ analyzedAt() || '—' }}</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Modèle</span>
+        <span class="field-value">{{ result()?.model_name || '—' }}</span>
+      </div>
+    </div>
+
+    <div class="clip-zone">
+      @if (imagePreview()) {
+        <div class="clip">
+          <span class="tape left"></span>
+          <span class="tape right"></span>
+          <img [src]="imagePreview()" alt="Cliché joint au dossier" />
+        </div>
+      } @else {
+        <label class="drop">
+          <span>Joindre un cliché au dossier</span>
+          <span class="drop-sub">cliquez pour choisir un fichier JPEG ou PNG</span>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        </label>
+      }
+    </div>
+
+    <div class="actions">
+      @if (imagePreview()) {
+        <label class="swap">
+          changer de cliché
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        </label>
+      }
+      <button class="run" (click)="analyzeImage()" [disabled]="!selectedFile || loading()">
+        {{ loading() ? 'Lecture du cliché…' : 'Lancer la lecture' }}
+      </button>
+    </div>
+
+    <section class="report">
+      <h2>Compte-rendu</h2>
+
+      @if (!result() && !loading() && !error()) {
+        <p class="line muted">En attente d'un cliché à interpréter.</p>
+      }
+
+      @if (loading()) {
+        <p class="line typing">Interprétation du cliché en cours…</p>
+      }
+
+      @if (error()) {
+        <p class="line error">{{ error() }}</p>
+      }
+
+      @if (result(); as r) {
+        <div class="findings">
+          <p class="line">Analyse du parenchyme pulmonaire réalisée par lecture automatique.</p>
+          <p class="line">Probabilité cliché normal — {{ normalPct() }}%</p>
+          <p class="line">Probabilité foyer de pneumonie — {{ pneumoniaPct() }}%</p>
+        </div>
+
+        <div class="verdict-row">
+          <div class="stamp" [class.alert]="isPneumonia()">
+            {{ isPneumonia() ? 'Suspicion pneumonie' : 'Cliché clair' }}
+          </div>
+          <button class="again" (click)="reset()">nouveau cliché</button>
+        </div>
+      }
+    </section>
+
+    <footer class="fineprint">
+      Document généré à des fins pédagogiques dans le cadre d'un projet académique de vision par ordinateur.
+      Cette lecture automatisée n'a pas de valeur diagnostique et ne remplace pas l'interprétation
+      d'un radiologue.
+    </footer>
+  </div>
+</div>

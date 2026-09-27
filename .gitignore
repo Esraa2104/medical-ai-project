@@ -1,0 +1,20 @@
+# Environnement Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Données (trop volumineuses pour Git)
+data/
+
+# Modèles entraînés (optionnel — décommente si tu veux les exclure aussi)
+# models/*.keras
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Système
+.DS_Store
+Thumbs.db
+*.log
+models/*.keras
